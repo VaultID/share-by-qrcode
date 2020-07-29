@@ -1,0 +1,22 @@
+version: "2"
+services:
+  share-by-qrcode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: share-by-qrcode
+    ports:
+      - 8080:80
+      - 8443:443
+    volumes:
+      - .:/var/www
+      - ./cert/cert.pem:/etc/apache2/cert/cert.pem
+      - ./cert/cert.key:/etc/apache2/cert/cert.key
+      - ./cert/AC.pem:/etc/apache2/cert/AC.pem
+    environment:
+      - 'adapterStorageName=StorageS3Adapter'
+      - 'adaterStorageConfig={"path":"","version":"latest","region":"sa-east-1","bucket":"","AWS_ACCESS_KEY_ID":"","AWS_SECRET_ACCESS_KEY":""}'
+      - 'qrcodeBaseUrl=https://<dominio deste servico>/d'
+      - 'redirectBaseUrl=https://seusite.com.br/download'
+
+ 
