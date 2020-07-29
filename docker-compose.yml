@@ -6,8 +6,8 @@ services:
       dockerfile: Dockerfile
     container_name: share-by-qrcode
     ports:
-      - 8080:80
-      - 8443:443
+      - 8085:80
+      - 8086:443
     volumes:
       - .:/var/www
       - ./cert/cert.pem:/etc/apache2/cert/cert.pem
