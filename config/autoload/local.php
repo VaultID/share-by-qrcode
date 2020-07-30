@@ -2,8 +2,8 @@
 
 $storageAdapterName = getenv('storageAdapterName') !== false ? getenv('storageAdapterName') : 'StorageDiskAdapter';
 $storageAdapterConfig = getenv('storageAdapterConfig') !== false ? base64_decode( getenv('storageAdapterConfig') ) : '{"path":"/var/www/data/files","prefix":"qrcode-"}';
-$qrcodeBaseUrl = getenv('qrcodeBaseUrl') !== false ? getenv('qrcodeBaseUrl') : 'http://localhost:8085/d';
-$redirectBaseUrl = getenv('redirectBaseUrl') !== false ? getenv('redirectBaseUrl') : 'http://localhost:8085';
+$qrcodeBaseUrl = getenv('qrcodeBaseUrl') !== false ? getenv('qrcodeBaseUrl') : 'https://localhost:8086/d';
+$redirectBaseUrl = getenv('redirectBaseUrl') !== false ? getenv('redirectBaseUrl') : 'https://localhost:8086';
 
 
 return [

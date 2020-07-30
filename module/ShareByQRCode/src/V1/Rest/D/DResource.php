@@ -2,6 +2,7 @@
 namespace ShareByQRCode\V1\Rest\D;
 
 use Application\Adapter\Storage\StorageAdapterInterface;
+use Application\Helper\QRCodeHelper;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
 use Laminas\Http\Response;
@@ -107,7 +108,14 @@ class DResource extends AbstractResourceListener
          */
         $qrcodeLink = $this->config['app']['qrcode-base-url'];
         $qrcodeLink = rtrim($qrcodeLink,'/') . '/' . $qrcodeId;
-        $qrcodeJson['link'] = $qrcodeLink;
+        $qrcodeJson['url'] = $qrcodeLink;
+
+        /**
+         * Gerar imagem
+         */
+        $qrHelper = QRCodeHelper::getMinimumQRCode($qrcodeJson['url'], QR_ERROR_CORRECT_LEVEL_Q);
+        $qrcodeImage = $qrHelper->getGifBytes(4,8);
+        $qrcodeJson['gif'] = base64_encode($qrcodeImage);
 
         return $qrcodeJson;
     }
