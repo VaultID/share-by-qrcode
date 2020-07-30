@@ -164,6 +164,74 @@ class DResource extends AbstractResourceListener
         }
 
         /**
+         * VERIFICAR SE É O VALIDADOR DO ITI OU FRONTEND AUTENTICADO
+         */
+        if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_format') !== null
+            && $this->getEvent()->getRequest()->getQuery()->offsetGet('_format') == "application/validador-iti json"
+        ) {
+            $secret = null;
+            if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_secret') !== null ) {
+                $secret = $this->getEvent()->getRequest()->getQuery()->offsetGet('_secret');
+            }
+            if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_secretCode') !== null ) {
+                $secret = $this->getEvent()->getRequest()->getQuery()->offsetGet('_secretCode');
+                
+            }
+            // Se for Código de Acesso gerado internamente, aplicar regras de auxílio
+            if( $secret !== null && $qrcodeData['access_code']['type']=='internal' ) {
+                $secret = strtoupper($secret);
+                $secret = strtr($secret,[
+                    'O' => '0' // não há letra 'o' no auth, se digitar trocar por 0 (zero)
+                ]);
+            }
+            // Verificar código de acesso
+            if( $secret !== null && $secret == $qrcodeData['access_code']['value'] ) {
+                // Identificador do objeto
+                $this->storageAdapter->setFilename( $qrcodeData['file'] );
+
+                // Link autenticado para download
+                $downloadLink = $this->storageAdapter->getPublicLink();
+
+                if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_frontend') !== null
+                    && $this->getEvent()->getRequest()->getQuery()->offsetGet('_frontend') == "true"
+                ) {
+                    /**
+                     * Resposta para frontend
+                     */
+                    $responseData = $qrcodeData;
+                    $responseData['download'] = $downloadLink;
+                } else {
+                    /**
+                     * Preparar resposta no formato esperado pelo ITI
+                     */
+                    $responseData = [
+                        'version' => '1.0.0',
+                        'prescription' => (object) [
+                            'signatureFiles' => [
+                                (object) [
+                                    'url' => $downloadLink
+                                ]
+                            ]
+                        ]
+                    ];
+                }
+        
+                $response = new Response();
+                $response->setStatusCode(Response::STATUS_CODE_200);
+                $response->getHeaders()->addHeaders([
+                    'Content-Type' => 'application/json',
+                ]);
+                $response->setContent(
+                    json_encode($responseData)
+                );
+        
+                return $response;
+            } else {
+                return new ApiProblem(401, 'Not Authorized');
+            }
+        }
+
+        /**
          * Redirecionar para frontend que irá solicitar o código de autenticação
          */
         $redirect = $this->config['app']['redirect-base-url'];
@@ -176,7 +244,6 @@ class DResource extends AbstractResourceListener
         ]);
         $response->setContent(
             '302 Found' . PHP_EOL
-            . '<br/>' . PHP_EOL
             . $redirect
         );
 

@@ -18,6 +18,14 @@ interface StorageAdapterInterface {
     public function setId($id);
 
     /**
+     * Set file/object filename
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public function setFilename($fileName);
+
+    /**
      * Write file from bytes
      * 
      * @param type $bytes

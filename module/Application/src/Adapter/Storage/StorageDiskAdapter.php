@@ -40,6 +40,16 @@ class StorageDiskAdapter implements StorageAdapterInterface {
 
         return true;
     }
+
+    /**
+     * Set file/object filename
+     * 
+     * @param type $id
+     * @return boolean
+     */
+    public function setFilename($fileName) {
+        $this->fileName = $fileName;
+    }
     
     /**
      * Get Storage Disk Config

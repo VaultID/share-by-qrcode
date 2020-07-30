@@ -1,0 +1,225 @@
+{
+	"info": {
+		"_postman_id": "a1c4b3da-1e38-4446-8dc9-86dda7a9d96c",
+		"name": "QRCode",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Criar QRCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5aac43b0-bf94-4716-a939-781ced4d4d10",
+						"exec": [
+							"pm.globals.set(\"QRCODE_ID\", \"???\");",
+							"",
+							"if(pm.response.code == 201 && pm.response.responseSize > 0)",
+							"{",
+							"    var jsonData = false;",
+							"    if( pm.response.responseSize > 0 )",
+							"        jsonData = pm.response.json();",
+							"    ",
+							"    if( jsonData && jsonData.id )",
+							"        pm.globals.set(\"QRCODE_ID\", jsonData.id);",
+							"",
+							"    if( jsonData && jsonData.access_code )",
+							"        pm.globals.set(\"QRCODE_AUTH\", jsonData.access_code.value);",
+							"}",
+							"else {",
+							"    console.error(\"Erro ao criar QRCode\", pm.response.code, pm.response.status)",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "app",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "pwd",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file\": \"/var/www/data/files/exemplo.txt\",\n    \"OPTIONAL_access_code\": \"ABC123\",\n    \"metadata\": {\n        \"descricao\": \"Este é apenas um teste\",\n        \"objeto\": {\n            \"id\": 1,\n            \"nome\": \"abc\"\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8085/d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ler QRCode",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7e107eda-3996-4f6d-b363-d0a22986ed75",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8085/d/{{QRCODE_ID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"d",
+						"{{QRCODE_ID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download QRCode (frontend)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ff8f4714-0fef-4b96-84ac-aa8cb75ce607",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8085/d/{{QRCODE_ID}}?_format=application/validador-iti+json&_secretCode={{QRCODE_AUTH}}&_frontend=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"d",
+						"{{QRCODE_ID}}"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "application/validador-iti+json"
+						},
+						{
+							"key": "_secretCode",
+							"value": "{{QRCODE_AUTH}}"
+						},
+						{
+							"key": "_frontend",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download QRCode (ITI)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "50973901-ddc6-4fb8-bd77-6b12e8fe72da",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8085/d/{{QRCODE_ID}}?_format=application/validador-iti+json&_secretCode={{QRCODE_AUTH}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"d",
+						"{{QRCODE_ID}}"
+					],
+					"query": [
+						{
+							"key": "_format",
+							"value": "application/validador-iti+json"
+						},
+						{
+							"key": "_secretCode",
+							"value": "{{QRCODE_AUTH}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
