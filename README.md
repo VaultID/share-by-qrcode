@@ -67,6 +67,32 @@ A variável de ambiente `storageAdapterName` especifica o tipo de repositório q
 
 Cada tipo de repositório tem configurações diferentes em formato JSON. Codifique o JSON de configuração em Base64 e coloque na variável de ambiente `storageAdapterConfig`.
 
+#### `StorageAdapterAwsS3` (AWS S3)
+
+Salva os metadados em um bucket do **AWS S3**. Recomendamos que o bucket seja **PRIVADO**. Após a autenticação, uma URL assinada temporária será gerada para permitir o download do arquivo.
+
+Configuração:
+
+Campo | Descrição
+--- | ---
+`region` | Região AWS
+`bucket` | Identificador do bucket
+`prefix` | Prefixo acrescido antes do ID do QRCode. O identificador do arquivo será `{prefix}{id}.json`
+`ttl` | Tempo de validade do link de download, em segundos *(se não informado, será de 15 minutos)*
+`aws_access_key_id` | Identificador da chave
+`aws_secret_access_key` | Chave de acesso à API AWS
+
+```json
+{
+    "region": "sa-east-1",
+    "bucket": "<bucket>",
+    "prefix": "<prefixo para arquivos de metadados do QRCode>",
+    "ttl": 900,
+    "aws_access_key_id": "",
+    "aws_secret_access_key": ""
+}
+```
+
 #### `StorageDiskAdapter` (filesystem local)
 
 Salva os metadados no sistema de arquivos do **container**. Importante configurar o mapeamento para um local persistente.
@@ -84,7 +110,6 @@ Campo | Descrição
     "prefix": "qrcode-"
 }
 ```
-
 
 ---------------------
 
