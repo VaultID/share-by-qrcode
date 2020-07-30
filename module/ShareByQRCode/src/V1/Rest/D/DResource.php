@@ -68,6 +68,11 @@ class DResource extends AbstractResourceListener
             return new ApiProblem(500, "Falha ao preparar QRCode. Tente novamente.");
         }
 
+        // Aplicar ID no nome do arquivo
+        $qrcodeJson['file'] = strtr($qrcodeJson['file'],[
+            '{ID}' => $qrcodeJson['id']
+        ]);
+
         // Código de acesso (para autenticação do QRCode)
         if( empty($data->access_code) ) {
             // Código de autenticação para acesso ao QRCode
