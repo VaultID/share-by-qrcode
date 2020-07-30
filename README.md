@@ -37,7 +37,54 @@ Esse serviço de compartilhamento implementa a versão 1.0.0 do padrão definido
 
 ---------------------
 
-## Configuração
+## Configuração como serviço
+
+Crie o arquivo `docker-compose.override.yml` para ajustar as configurações, ou edite o `docker-compose.yml`.
+
+### Requisitos
+
+- Domínio ou subdomínio decicado para o serviço
+- Certificado SSL
+- Configuração do repositório dos arquivos, com permissão de escrita no local/pasta onde serão salvos os dados de cada QRCode (arquivos JSON)
+
+### Configuração SSL
+
+Coloque na pasta `cert/` três arquivos:
+- `cert.pem` : arquivo do certificado SSL do site (formato PEM)
+- `cert.key` : chave privada do certificado (formato PEM, sem senha)
+- `AC.pem` : arquivo com cadeias intermediários (formato PEM)
+
+*Se for utilizar um proxy reverso que terá o HTTPS pode ignorar essa parte, mas mantenha os arquivos atuais.*
+
+### URL's
+
+- `qrcodeBaseUrl` : Base-URL para o link do QRCode. O `ID` do QRCode será acrescentado a essa Base-URL. **Importante:** mantenha o `/d` no final da URL, a menos que modifique a rota do serviço. Exemplo: `https://seusite.com.br/d`
+- `redirectBaseUrl` : Base-URL do frontend que irá solicitar o Código de Acesso (interface para o usuário). O `ID` do QRCode será acrescentado a essa Base-URL. Exemplo: `https://seusite.com.br/acessar/arquivo`
+
+### Repositório de arquivos
+
+A variável de ambiente `storageAdapterName` especifica o tipo de repositório que será usado. O mesmo repositório é usado para salvar os dados do QRCode (arquivo JSON) e para acessar os arquivos a serem compartilhados.
+
+Cada tipo de repositório tem configurações diferentes em formato JSON. Codifique o JSON de configuração em Base64 e coloque na variável de ambiente `storageAdapterConfig`.
+
+#### `StorageDiskAdapter` (filesystem local)
+
+Salva os metadados no sistema de arquivos do **container**. Importante configurar o mapeamento para um local persistente.
+
+Configuração:
+
+Campo | Descrição
+--- | ---
+`path` | Pasta para salvar os arquivos JSON de cada QRCode
+`prefix` | Prefixo acrescido antes do ID do QRCode. O nome do arquivo será `{prefix}{id}.json`
+
+```json
+{
+    "path": "/var/www/data/files",
+    "prefix": "qrcode-"
+}
+```
+
 
 ---------------------
 
@@ -73,7 +120,7 @@ Parâmetro | Tipo | Descrição
 
 **Resposta:**
 
-Parâmetro | Descrição
+Campo | Descrição
 --- | ---
 `id` | ID único do QRCode gerado
 `file` | Identificador do arquivo a ser compartilhado *(a sequência `{ID}` já foi substituída)*.
@@ -124,7 +171,7 @@ GET https://localhost:8086/d/qtnu8exbay4?_format=application/validador-iti+json&
 
 **Resposta com `_frontend=true`:**
 
-Parâmetro | Descrição
+Campo | Descrição
 --- | ---
 `id` | ID único do QRCode gerado
 `file` | Identificador do arquivo a ser compartilhado.
