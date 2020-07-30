@@ -113,9 +113,20 @@ Campo | Descrição
 }
 ```
 
+### Execução
+
+Utilize o `docker-compose` e depois execute no container o `composer` para instalar as dependências.
+
+```bash
+docker-compose up
+docker exec -it share-by-qrcode /bin/bash
+composer install
+exit
+```
+
 ---------------------
 
-## Serviços
+## Serviços / Integração
 
 Na pasta `docs` há uma coleção do Postman que pode ser usada como referência.
 

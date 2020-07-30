@@ -172,7 +172,7 @@ class DResource extends AbstractResourceListener
                 if( !$qrcodeData || count($qrcodeData) == 0 ) {
                     return new ApiProblem(404, 'Not Found');
                 }
-            } catch( Exception $e ) {
+            } catch( \Exception $e ) {
                 return new ApiProblem(404, 'Not Found');
             }
 

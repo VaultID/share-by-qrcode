@@ -9,9 +9,9 @@ namespace Application\Adapter\Storage;
  */
 class StorageDiskAdapter implements StorageAdapterInterface {
  
-    private $config;
-    private $id = null;
-    private $fileName = null;
+    protected $config;
+    protected $id = null;
+    protected $fileName = null;
     
     /**
      * Constructor
