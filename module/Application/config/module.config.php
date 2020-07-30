@@ -46,4 +46,9 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            'storageAdapter' => \Application\Adapter\Storage\StorageAdapterFactory::class,
+        ]
+    ],
 ];

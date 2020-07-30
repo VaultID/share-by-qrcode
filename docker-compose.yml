@@ -14,8 +14,8 @@ services:
       - ./cert/cert.key:/etc/apache2/cert/cert.key
       - ./cert/AC.pem:/etc/apache2/cert/AC.pem
     environment:
-      - 'adapterStorageName=StorageS3Adapter'
-      - 'adaterStorageConfig={"path":"","version":"latest","region":"sa-east-1","bucket":"","AWS_ACCESS_KEY_ID":"","AWS_SECRET_ACCESS_KEY":""}'
+      #- 'storageAdapterName=StorageAdapterAwsS3'
+      #- 'storageAdapterConfig=ewogICAgInJlZ2lvbiI6ICJzYS1lYXN0LTEiLAogICAgImJ1Y2tldCI6ICI8YnVja2V0PiIsCiAgICAiYmFzZV9wYXRoIjogIjxwcmVmaXhvIHBhcmEgYXJxdWl2b3MgZGUgbWV0YWRhZG9zIGRvIFFSQ29kZT4iLAogICAgImF3c19hY2Nlc3Nfa2V5X2lkIjogIiIsCiAgICAiYXdzX3NlY3JldF9hY2Nlc3Nfa2V5IjogIiIKfQo='
       - 'qrcodeBaseUrl=https://<dominio deste servico>/d'
       - 'redirectBaseUrl=https://seusite.com.br/download'
 

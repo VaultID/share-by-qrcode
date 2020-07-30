@@ -5,6 +5,8 @@ class DResourceFactory
 {
     public function __invoke($services)
     {
-        return new DResource();
+        $config = $services->get('config');
+        $storageAdapter = $services->get('storageAdapter');
+        return new DResource($config, $storageAdapter);
     }
 }

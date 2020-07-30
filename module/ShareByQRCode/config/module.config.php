@@ -31,9 +31,10 @@ return [
             'collection_name' => 'd',
             'entity_http_methods' => [
                 0 => 'GET',
-                1 => 'POST',
             ],
-            'collection_http_methods' => [],
+            'collection_http_methods' => [
+                0 => 'POST',
+            ],
             'collection_query_whitelist' => [],
             'page_size' => 25,
             'page_size_param' => null,
@@ -81,14 +82,14 @@ return [
             'ShareByQRCode\\V1\\Rest\\D\\Controller' => [
                 'collection' => [
                     'GET' => false,
-                    'POST' => false,
+                    'POST' => true,
                     'PUT' => false,
                     'PATCH' => false,
                     'DELETE' => false,
                 ],
                 'entity' => [
                     'GET' => false,
-                    'POST' => true,
+                    'POST' => false,
                     'PUT' => false,
                     'PATCH' => false,
                     'DELETE' => false,

@@ -1,11 +1,22 @@
 <?php
 namespace ShareByQRCode\V1\Rest\D;
 
+use Application\Adapter\Storage\StorageAdapterInterface;
 use Laminas\ApiTools\ApiProblem\ApiProblem;
 use Laminas\ApiTools\Rest\AbstractResourceListener;
+use Laminas\Http\Response;
 
 class DResource extends AbstractResourceListener
 {
+    protected $config;
+    protected $storageAdapter;
+
+    public function __construct($config,StorageAdapterInterface $storageAdapter)
+    {
+        $this->config = $config;
+        $this->storageAdapter = $storageAdapter;
+    }
+
     /**
      * Create a resource
      *
@@ -47,6 +58,12 @@ class DResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
+        $this->storageAdapter->setId($id . '.json');
+        return [
+            'id' => $this->storageAdapter->getId(),
+            'config' => $this->storageAdapter->getConfig(),
+            'link' => $this->storageAdapter->getPublicLink(),
+        ];
         return new ApiProblem(405, 'The GET method has not been defined for individual resources');
     }
 
