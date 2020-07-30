@@ -3,5 +3,6 @@
 /phpunit.xml
 /vendor/
 config/development.config.php
+docker-compose.override.yml
 data/cache/*
 data/files/*
