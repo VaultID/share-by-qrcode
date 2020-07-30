@@ -28,6 +28,16 @@ class DResource extends AbstractResourceListener
     public function create($data)
     {
 
+        // Nome/Identificador do arquivo a ser compartilhado
+        if( empty($data->file) ) {
+            return new ApiProblem(400, "Invalid parameter 'file'");
+        }
+        // Metadados iniciais do QRCode
+        $qrcodeJson = [
+            "id" => null,
+            "file" => $data->file,
+        ];
+
         // Garantir que ainda não existe o ID do QRcode
         $qrcodeTentativas = 3;
         while( $qrcodeTentativas > 0 ) {
@@ -43,26 +53,45 @@ class DResource extends AbstractResourceListener
                 '1' => 'z'
             ]);
             $qrcodeTentativas--;
-
+            //$qrcodeId = 'abc';
             try {
                 $this->storageAdapter->setId($qrcodeId.'.json');
                 $qrcodeData = $this->storageAdapter->readBytes();
                 if( strlen($qrcodeData) == 0 ) {
+                    $qrcodeJson['id'] = $qrcodeId;
                     $qrcodeTentativas = -1;
                 }
             } catch( Exception $e ) {
             }
         }
-        if( $qrcodeTentativas != -1 ) {
-            return new ApiProblem(400, "Falha ao preparar QRCode. Tente novamente.");
+        if( $qrcodeJson['id'] == null ) {
+            return new ApiProblem(500, "Falha ao preparar QRCode. Tente novamente.");
         }
 
-        return [
-            'id' => $qrcodeId,
-            'link' => $this->storageAdapter->getPublicLink(),
-        ];
-        
-        return new ApiProblem(405, 'The POST method has not been defined');
+        // Código de acesso (para autenticação do QRCode)
+        if( empty($data->access_code) ) {
+            // Código de autenticação para acesso ao QRCode
+            $qrcodeAuth = ''.rand(10000,99999).rand(1000,9999);
+            $qrcodeAuth = base_convert($qrcodeAuth,10,32);
+            $qrcodeAuth = strtr($qrcodeAuth,[
+                'i' => 'w',
+                'l' => 'x',
+                'o' => 'y',
+                '1' => 'z'
+            ]);
+            $qrcodeAuth = strtoupper( $qrcodeAuth );
+            $qrcodeJson['access_code'] = [
+                'type' => 'internal',
+                'value' => $qrcodeAuth
+            ];
+        } else {
+            $qrcodeJson['access_code'] = [
+                'type' => 'external',
+                'value' => $data->access_code
+            ];
+        }
+
+        return $qrcodeJson;
     }
 
     /**
