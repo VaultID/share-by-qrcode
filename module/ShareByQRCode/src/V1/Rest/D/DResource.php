@@ -42,7 +42,7 @@ class DResource extends AbstractResourceListener
         $qrcodeTentativas = 3;
         while( $qrcodeTentativas > 0 ) {
             // Sortear entre 90 mil possibilidades / segundo
-            $qrcodeId = date('ymdHis') . rand(10000,99999);
+            $qrcodeId = rand(100,999) . date('ymdHis') . rand(10,99);
             // Reduzir o ID
             $qrcodeId = base_convert($qrcodeId,10,32);
             // Substituir caracteres que podem confundir a digitação
