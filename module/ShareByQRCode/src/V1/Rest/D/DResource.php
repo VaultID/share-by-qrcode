@@ -53,7 +53,6 @@ class DResource extends AbstractResourceListener
                 '1' => 'z'
             ]);
             $qrcodeTentativas--;
-            //$qrcodeId = 'abc';
             try {
                 $this->storageAdapter->setId($qrcodeId.'.json');
                 $qrcodeData = $this->storageAdapter->readBytes();
@@ -61,7 +60,7 @@ class DResource extends AbstractResourceListener
                     $qrcodeJson['id'] = $qrcodeId;
                     $qrcodeTentativas = -1;
                 }
-            } catch( Exception $e ) {
+            } catch( \Exception $e ) {
             }
         }
         if( $qrcodeJson['id'] == null ) {
@@ -90,6 +89,25 @@ class DResource extends AbstractResourceListener
                 'value' => $data->access_code
             ];
         }
+
+        // Salvar metadados extras enviados pela aplicação
+        if( !empty($data->metadata) ) {
+            $qrcodeJson['metadata'] = $data->metadata;
+        }
+
+        /**
+         * Salvar dados do QRCode no arquivo JSON
+         */
+        if(!$this->storageAdapter->writeBytes( json_encode($qrcodeJson) )) {
+            return new ApiProblem(500, "Falha ao salvar dados do QRCode. Tente novamente.");
+        }
+
+        /**
+         * Acrescentar URL do QRCode, e imagem do QRCode
+         */
+        $qrcodeLink = $this->config['app']['qrcode-base-url'];
+        $qrcodeLink = rtrim($qrcodeLink,'/') . '/' . $qrcodeId;
+        $qrcodeJson['link'] = $qrcodeLink;
 
         return $qrcodeJson;
     }

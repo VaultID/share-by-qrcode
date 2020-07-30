@@ -101,7 +101,7 @@ class StorageDiskAdapter implements StorageAdapterInterface {
     public function getPublicLink(){
 
         if(is_null($this->fileName)){
-            //throw new \RuntimeException("Set Id before read");
+            throw new \RuntimeException("Set Id before read");
         }
 
         return $this->fileName;
