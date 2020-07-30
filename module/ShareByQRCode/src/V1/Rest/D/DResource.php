@@ -19,12 +19,49 @@ class DResource extends AbstractResourceListener
 
     /**
      * Create a resource
+     * 
+     * Criar um QRCode, o link público, salvar metadados (JSON)
      *
      * @param  mixed $data
      * @return ApiProblem|mixed
      */
     public function create($data)
     {
+
+        // Garantir que ainda não existe o ID do QRcode
+        $qrcodeTentativas = 3;
+        while( $qrcodeTentativas > 0 ) {
+            // Sortear entre 90 mil possibilidades / segundo
+            $qrcodeId = date('ymdHis') . rand(10000,99999);
+            // Reduzir o ID
+            $qrcodeId = base_convert($qrcodeId,10,32);
+            // Substituir caracteres que podem confundir a digitação
+            $qrcodeId = strtr($qrcodeId,[
+                'i' => 'w',
+                'l' => 'x',
+                'o' => 'y',
+                '1' => 'z'
+            ]);
+            $qrcodeTentativas--;
+
+            try {
+                $this->storageAdapter->setId($qrcodeId.'.json');
+                $qrcodeData = $this->storageAdapter->readBytes();
+                if( strlen($qrcodeData) == 0 ) {
+                    $qrcodeTentativas = -1;
+                }
+            } catch( Exception $e ) {
+            }
+        }
+        if( $qrcodeTentativas != -1 ) {
+            return new ApiProblem(400, "Falha ao preparar QRCode. Tente novamente.");
+        }
+
+        return [
+            'id' => $qrcodeId,
+            'link' => $this->storageAdapter->getPublicLink(),
+        ];
+        
         return new ApiProblem(405, 'The POST method has not been defined');
     }
 
