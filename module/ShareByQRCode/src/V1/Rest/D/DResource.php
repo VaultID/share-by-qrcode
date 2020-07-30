@@ -150,25 +150,30 @@ class DResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        /**
-         * Verificar se metadados do QRcode existem
-         */
-        try {
-            $this->storageAdapter->setId($id . '.json');
-            $qrcodeData = json_decode($this->storageAdapter->readBytes(),true);
-            if( !$qrcodeData || count($qrcodeData) == 0 ) {
-                return new ApiProblem(404, 'Not Found');
-            }
-        } catch( Exception $e ) {
-            return new ApiProblem(404, 'Not Found');
-        }
 
         /**
-         * VERIFICAR SE É O VALIDADOR DO ITI OU FRONTEND AUTENTICADO
+         * VERIFICAR SE É O FRONTEND AUTENTICADO
+         * OU VALIDADOR DO ITI
          */
         if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_format') !== null
             && $this->getEvent()->getRequest()->getQuery()->offsetGet('_format') == "application/validador-iti json"
         ) {
+            /**
+             * Verificar se metadados do QRcode existem
+             */
+            try {
+                $this->storageAdapter->setId($id . '.json');
+                $qrcodeData = json_decode($this->storageAdapter->readBytes(),true);
+                if( !$qrcodeData || count($qrcodeData) == 0 ) {
+                    return new ApiProblem(404, 'Not Found');
+                }
+            } catch( Exception $e ) {
+                return new ApiProblem(404, 'Not Found');
+            }
+
+            /**
+             * Verificar código de acesso
+             */
             $secret = null;
             if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_secret') !== null ) {
                 $secret = $this->getEvent()->getRequest()->getQuery()->offsetGet('_secret');
