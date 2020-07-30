@@ -41,6 +41,8 @@ Esse serviço de compartilhamento implementa a versão 1.0.0 do padrão definido
 
 Crie o arquivo `docker-compose.override.yml` para ajustar as configurações, ou edite o `docker-compose.yml`.
 
+Escalabidade: é um serviço *stateless* que depende apenas do acesso ao repositório de arquivos. Pode ser escalado facilmente com um balanceador de carga ou DNS Round-robin.
+
 ### Requisitos
 
 - Domínio ou subdomínio decicado para o serviço
