@@ -47,11 +47,13 @@ Na pasta `docs` há uma coleção do Postman que pode ser usada como referência
 
 ### Criar um QRCode
 
-Serviço: `POST <url>/d`
+Serviço: `POST https://<site_do_servico>/d`
 
 Authentication: `Basic` *(veja a Configuração)*
 
 Content-Type: `application/json`
+
+**Requisição:**
 
 Parâmetro | Tipo | Descrição
 --- | --- | ---
@@ -59,7 +61,7 @@ Parâmetro | Tipo | Descrição
 `access_code` | String | Código de acesso para autenticação. Se não for informado, um código pseudo-aleatório será gerado.
 `metadata` | JSON | Se informado, será salvo com as demais informações do QRCode, e será retornado ao consultar o QRCode.
 
-Requisição:
+
 ```json
 {
     "file": "/var/www/data/files/exemplo-{ID}.txt",
@@ -69,7 +71,17 @@ Requisição:
 }
 ```
 
-Resposta:
+**Resposta:**
+
+Parâmetro | Descrição
+--- | ---
+`id` | ID único do QRCode gerado
+`file` | Identificador do arquivo a ser compartilhado *(a sequência `{ID}` já foi substituída)*.
+`url` | URL para compartilhamento.
+`gif` | Base64 da imagem GIF do QRCode com a `url`.
+`access_code.type` | `internal` quando for gerado automaticamente, `external` quando for informado na requisição.
+`access_code.value` | Código de Acesso que deve ser informado para acessar o arquivo.
+
 ```json
 {
     "id": "qtnu8exbay4",
@@ -87,6 +99,65 @@ Resposta:
         "self": {
             "href": "http://localhost:8085/d/qtnu8exbay4"
         }
+    }
+}
+```
+
+### Download do Arquivo
+
+Serviço: `GET https://<site_do_servico>/d/<ID>`
+
+**IMPORTANTE**: o `id` faz parte da URL e não é um Query Param.
+
+**Requisição:**
+
+Query Param | Tipo | Descrição
+--- | --- | ---
+`_format` | String | *(Obrigatório)* Deve ser `application/validador-iti+json`.
+`_secretCode` | String | *(Obrigatório)* Código de Acesso associado.
+`_frontend` | String | Se for `true`, a resposta será um JSON completo. Se não informado, ou tiver outro valor, a resposta será no padrão esperado pelo ITI.
+
+
+```http
+GET https://localhost:8086/d/qtnu8exbay4?_format=application/validador-iti+json&_secretCode=88B76F&_frontend=true
+```
+
+**Resposta com `_frontend=true`:**
+
+Parâmetro | Descrição
+--- | ---
+`id` | ID único do QRCode gerado
+`file` | Identificador do arquivo a ser compartilhado.
+`download` | URL para download do arquivo.
+`access_code.type` | `internal` quando for gerado automaticamente, `external` quando for informado na requisição.
+`access_code.value` | Código de Acesso que deve ser informado para acessar o arquivo.
+
+```json
+{
+    "id": "qtnu8exbay4",
+    "file": "/var/www/data/files/exemplo-qtnu8exbay4.txt",
+    "access_code": {
+        "type": "internal",
+        "value": "88B76F"
+    },
+    "metadata": {
+        "descricao": "Este é apenas um teste"
+    },
+    "download": "https://<site_para_download>/var/www/data/files/exemplo-qtnu8exbay4.txt"
+}
+```
+
+**Resposta padrão ITI:**
+
+```json
+{
+    "version": "1.0.0",
+    "prescription": {
+        "signatureFiles": [
+            {
+                "url": "https://<site_para_download>/var/www/data/files/exemplo-qtnu8exbay4.txt"
+            }
+        ]
     }
 }
 ```
