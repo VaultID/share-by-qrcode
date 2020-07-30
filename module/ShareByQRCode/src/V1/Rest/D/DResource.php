@@ -150,13 +150,37 @@ class DResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        $this->storageAdapter->setId($id . '.json');
-        return [
-            'id' => $this->storageAdapter->getId(),
-            'config' => $this->storageAdapter->getConfig(),
-            'link' => $this->storageAdapter->getPublicLink(),
-        ];
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        /**
+         * Verificar se metadados do QRcode existem
+         */
+        try {
+            $this->storageAdapter->setId($id . '.json');
+            $qrcodeData = json_decode($this->storageAdapter->readBytes(),true);
+            if( !$qrcodeData || count($qrcodeData) == 0 ) {
+                return new ApiProblem(404, 'Not Found');
+            }
+        } catch( Exception $e ) {
+            return new ApiProblem(404, 'Not Found');
+        }
+
+        /**
+         * Redirecionar para frontend que irá solicitar o código de autenticação
+         */
+        $redirect = $this->config['app']['redirect-base-url'];
+        $redirect = rtrim($redirect,'/') . '/' . $id;
+
+        $response = new Response();
+        $response->setStatusCode(Response::STATUS_CODE_302);
+        $response->getHeaders()->addHeaders([
+            'Location: ' . $redirect
+        ]);
+        $response->setContent(
+            '302 Found' . PHP_EOL
+            . '<br/>' . PHP_EOL
+            . $redirect
+        );
+
+        return $response;
     }
 
     /**
