@@ -73,6 +73,8 @@ Cada tipo de repositório tem configurações diferentes em formato JSON. Codifi
 
 Salva os metadados em um bucket do **AWS S3**. Recomendamos que o bucket seja **PRIVADO**. Após a autenticação, uma URL assinada temporária será gerada para permitir o download do arquivo.
 
+**IMPORTANTE:** Não coloque `/` no início do prefixo (`prefix`) ou no nome do arquivo a ser compartilhado (parâmetro `file` no serviço de criação do QRCode).
+
 Configuração:
 
 Campo | Descrição
