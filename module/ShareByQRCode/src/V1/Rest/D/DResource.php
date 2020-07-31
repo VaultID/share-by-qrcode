@@ -41,6 +41,7 @@ class DResource extends AbstractResourceListener
 
         // Garantir que ainda não existe o ID do QRcode
         $qrcodeTentativas = 3;
+        $success = false;
         while( $qrcodeTentativas > 0 ) {
             // Sortear entre 90 mil possibilidades / segundo
             $qrcodeId = rand(100,999) . date('ymdHis') . rand(10,99);
@@ -58,10 +59,15 @@ class DResource extends AbstractResourceListener
                 $this->storageAdapter->setId($qrcodeId.'.json');
                 $qrcodeData = $this->storageAdapter->readBytes();
                 if( strlen($qrcodeData) == 0 ) {
-                    $qrcodeJson['id'] = $qrcodeId;
-                    $qrcodeTentativas = -1;
+                    $success = true;
                 }
             } catch( \Exception $e ) {
+                // Exceção por não encontrar o arquivo JSON
+                $success = true;
+            }
+            if( $success ) {
+                $qrcodeJson['id'] = $qrcodeId;
+                $qrcodeTentativas = -1;
             }
         }
         if( $qrcodeJson['id'] == null ) {
@@ -200,7 +206,11 @@ class DResource extends AbstractResourceListener
                 $this->storageAdapter->setFilename( $qrcodeData['file'] );
 
                 // Link autenticado para download
-                $downloadLink = $this->storageAdapter->getPublicLink();
+                try {
+                    $downloadLink = $this->storageAdapter->getPublicLink();
+                } catch( \Exception $e ) {
+                    return new ApiProblem(404, 'Not Found');
+                }
 
                 if( $this->getEvent()->getRequest()->getQuery()->offsetGet('_frontend') !== null
                     && $this->getEvent()->getRequest()->getQuery()->offsetGet('_frontend') == "true"

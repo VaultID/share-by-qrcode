@@ -98,7 +98,17 @@ class StorageAdapterAwsS3 extends StorageDiskAdapter {
             throw new \RuntimeException("Set Identity before read");
         }
         
-        return @file_get_contents($this->getPublicLink());
+        try {
+            // Get the object.
+            $result = $this->s3->getObject([
+                'Bucket' => $this->getConfig()['bucket'],
+                'Key'    => $this->fileName
+            ]);
+        } catch (S3Exception $e) {
+            throw new \Exception( $e->getMessage(), 404);
+        }
+    
+        return ($result['Body']);    
     }
 
     /**
@@ -127,9 +137,10 @@ class StorageAdapterAwsS3 extends StorageDiskAdapter {
             throw new \RuntimeException("Set Id before read");
         }
 
-        /**
-         * @TODO: Verificar se o objeto existe no S3
-         */
+        $versoes = $this->listVersions();
+        if( $versoes['Versions']==false || $versoes['DeleteMarkers'] ) {
+            throw new \Exception("File not found or marked for deletion", 404);
+        }
 
         $cmd = $this->s3->getCommand('GetObject', [
             'Bucket' => $this->config['bucket'],
