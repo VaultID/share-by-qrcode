@@ -1,8 +1,9 @@
+.DS_Store
+data/cache/*
 !data/cache/.gitkeep
 .vagrant/
 /phpunit.xml
 /vendor/
 config/development.config.php
 docker-compose.override.yml
-data/cache/*
 data/files/*
