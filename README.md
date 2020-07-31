@@ -195,6 +195,7 @@ Campo | Descrição
 `gif` | Base64 da imagem GIF do QRCode com a `url`.<br>Para apresentar diretamente em uma página HTML, pode usar `src="data:image/gif;base64,<base64gif>"`
 `access_code.type` | - `internal` quando for gerado automaticamente<br>- `external` quando for informado na requisição.
 `access_code.value` | Código de Acesso que deve ser informado para acessar o arquivo.
+`expires_on` | O mesmo informado na requisição.
 
 ```json
 {
@@ -245,6 +246,7 @@ Campo | Descrição
 `download` | URL para download do arquivo.
 `access_code.type` | `internal` quando for gerado automaticamente, `external` quando for informado na requisição.
 `access_code.value` | Código de Acesso que deve ser informado para acessar o arquivo.
+`expires_on` | Timestamp em segundos.
 
 ```json
 {
