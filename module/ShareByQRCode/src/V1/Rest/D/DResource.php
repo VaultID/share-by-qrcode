@@ -201,7 +201,7 @@ class DResource extends AbstractResourceListener
                 ]);
             }
             // Verificar código de acesso
-            if( $secret !== null && $secret == $qrcodeData['access_code']['value'] ) {
+            if( $secret !== null && strcmp($secret,$qrcodeData['access_code']['value'])==0 ) {
                 // Identificador do objeto
                 $this->storageAdapter->setFilename( $qrcodeData['file'] );
 
