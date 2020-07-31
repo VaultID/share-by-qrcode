@@ -16,7 +16,7 @@ O termo "QR Code" é marca registrada de DENSO WAVE INCORPORATED: http://www.den
 ## Funcionamento
 
 ### Gerar QRCode/Link
-Sua aplicação deve fazer uma chamada informando o nome/identificador do arquivo que deseja compartilhar. A resposta será um QRCode com uma URL única e um código de acesso.
+Sua aplicação deve fazer uma chamada informando o nome/identificador do arquivo que deseja compartilhar. A resposta será um QRCode com uma URL única e um código de acesso. Opcionalmente o QRCode/Link pode ter um prazo de validade.
 
 Compartilhe então o QRCode e/ou a URL, e do Código de Acesso.
 
@@ -56,7 +56,7 @@ Coloque na pasta `cert/` três arquivos:
 - `cert.key` : chave privada do certificado (formato PEM, sem senha)
 - `AC.pem` : arquivo com cadeias intermediários (formato PEM)
 
-*Se for utilizar um proxy reverso que terá o HTTPS pode ignorar essa parte, mas mantenha os arquivos atuais.*
+*Se utilizar um proxy reverso que tenha HTTPS, pode ignorar essa parte mas mantenha os arquivos atuais.*
 
 ### URL's
 
@@ -172,6 +172,7 @@ Parâmetro | Tipo | Descrição
 --- | --- | ---
 `file` | String | *(Obrigatório)* Nome ou identificador do arquivo a ser compartilhado. Se incluir a sequência `{ID}`, ela será substituída pelo ID único do QRCode.
 `access_code` | String | Código de acesso para autenticação. Se não for informado, um código pseudo-aleatório será gerado.
+`expires_on` | Inteiro | *(Opcional)* Expirar validade do QRCode/Link. Informar timestamp em segundos.<br>Após expirar, a resposta será sempre `404 - Not Found`.
 `metadata` | JSON | Se informado, será salvo com as demais informações do QRCode, e será retornado ao consultar o QRCode.
 
 

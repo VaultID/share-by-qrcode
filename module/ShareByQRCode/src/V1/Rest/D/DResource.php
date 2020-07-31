@@ -39,6 +39,14 @@ class DResource extends AbstractResourceListener
             "file" => $data->file,
         ];
 
+        // Expiração do QRCode (opcional)
+        if( !empty($data->expires_on) ) {
+            if( $data->expires_on <= 0 || $data->expires_on < time() ) {
+                return new ApiProblem(400, "Invalid parameter 'expires_on'");
+            }
+            $qrcodeJson["expires_on"] = $data->expires_on;
+        }
+
         // Garantir que ainda não existe o ID do QRcode
         $qrcodeTentativas = 3;
         $success = false;
@@ -179,6 +187,10 @@ class DResource extends AbstractResourceListener
                     return new ApiProblem(404, 'Not Found');
                 }
             } catch( \Exception $e ) {
+                return new ApiProblem(404, 'Not Found');
+            }
+
+            if( $qrcodeData['expires_on'] && $qrcodeData['expires_on'] < time() ) {
                 return new ApiProblem(404, 'Not Found');
             }
 
