@@ -63,13 +63,29 @@ Coloque na pasta `cert/` três arquivos:
 - `qrcodeBaseUrl` : Base-URL para o link do QRCode. O `ID` do QRCode será acrescentado a essa Base-URL. **Importante:** mantenha o `/d` no final da URL, a menos que modifique a rota do serviço. Exemplo: `https://seusite.com.br/d`
 - `redirectBaseUrl` : Base-URL do frontend que irá solicitar o Código de Acesso (interface para o usuário). O `ID` do QRCode será acrescentado a essa Base-URL. Exemplo: `https://seusite.com.br/acessar/arquivo`
 
+### Autenticação na API
+
+A criação de QRCode requer autenticação básica. O arquivo com os usuários e senhas é o `data/authentication.htpasswd`, e já tem um usuário para os testes: `app` com senha `pwd`.
+
+Para criar sua senha, execute esses comandos após ativar o container:
+
+```bash
+docker exec -it share-by-qrcode /bin/bash
+htpasswd -cs data/authentication.htpasswd <seu_usuario>
+<digite a senha>
+<confirme a senha>
+exit
+```
+
 ### Repositório de arquivos
 
-A variável de ambiente `storageAdapterName` especifica o tipo de repositório que será usado. O mesmo repositório é usado para salvar os dados do QRCode (arquivo JSON) e para acessar os arquivos a serem compartilhados.
+A variável de ambiente `storageAdapterName` especifica o tipo de repositório que será usado. O mesmo repositório é usado para salvar os dados do QRCode (arquivo JSON) e para acessar os arquivos a serem compartilhados. As opções atuais são:
+- `StorageAdapterAwsS3`
+- `StorageDiskAdapter`
 
 Cada tipo de repositório tem configurações diferentes em formato JSON. Codifique o JSON de configuração em Base64 e coloque na variável de ambiente `storageAdapterConfig`.
 
-#### `StorageAdapterAwsS3` (AWS S3)
+#### Configurar `StorageAdapterAwsS3` (AWS S3)
 
 Salva os metadados em um bucket do **AWS S3**. Recomendamos que o bucket seja **PRIVADO**. Após a autenticação, uma URL assinada temporária será gerada para permitir o download do arquivo.
 
@@ -97,7 +113,7 @@ Campo | Descrição
 }
 ```
 
-#### `StorageDiskAdapter` (filesystem local)
+#### Configurar `StorageDiskAdapter` (filesystem local)
 
 Salva os metadados no sistema de arquivos do **container**. Importante configurar o mapeamento para um local persistente.
 
@@ -120,10 +136,20 @@ Campo | Descrição
 Utilize o `docker-compose` e depois execute no container o `composer` para instalar as dependências.
 
 ```bash
-docker-compose up
+docker-compose up -d
 docker exec -it share-by-qrcode /bin/bash
 composer install
 exit
+```
+
+### Alterar configuração
+
+Sempre que alterar alguma configuração é preciso reiniciar o serviço e apagar o cache:
+
+```bash
+docker-compose down
+rm data/cache/module-c*
+docker-compose up -d
 ```
 
 ---------------------
@@ -165,8 +191,8 @@ Campo | Descrição
 `id` | ID único do QRCode gerado
 `file` | Identificador do arquivo a ser compartilhado *(a sequência `{ID}` já foi substituída)*.
 `url` | URL para compartilhamento.
-`gif` | Base64 da imagem GIF do QRCode com a `url`.
-`access_code.type` | `internal` quando for gerado automaticamente, `external` quando for informado na requisição.
+`gif` | Base64 da imagem GIF do QRCode com a `url`.<br>Para apresentar diretamente em uma página HTML, pode usar `src="data:image/gif;base64,<base64gif>"`
+`access_code.type` | - `internal` quando for gerado automaticamente<br>- `external` quando for informado na requisição.
 `access_code.value` | Código de Acesso que deve ser informado para acessar o arquivo.
 
 ```json
