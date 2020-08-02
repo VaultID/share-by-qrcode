@@ -16,7 +16,7 @@ services:
     environment:
       #- 'storageAdapterName=StorageAdapterAwsS3'
       #- 'storageAdapterConfig=ewogICAgInJlZ2lvbiI6ICJzYS1lYXN0LTEiLAogICAgImJ1Y2tldCI6ICI8YnVja2V0PiIsCiAgICAiYmFzZV9wYXRoIjogIjxwcmVmaXhvIHBhcmEgYXJxdWl2b3MgZGUgbWV0YWRhZG9zIGRvIFFSQ29kZT4iLAogICAgImF3c19hY2Nlc3Nfa2V5X2lkIjogIiIsCiAgICAiYXdzX3NlY3JldF9hY2Nlc3Nfa2V5IjogIiIKfQo='
-      #- 'qrcodeBaseUrl=https://<dominio deste servico>/d'
-      - 'redirectBaseUrl=https://seusite.com.br/download'
+      - 'qrcodeBaseUrl=https://<dominio deste servico>/d'
+      #- 'redirectBaseUrl=https://seusite.com.br/download'
 
  

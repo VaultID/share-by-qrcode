@@ -126,7 +126,7 @@ class DResource extends AbstractResourceListener
          * Acrescentar URL do QRCode, e imagem do QRCode
          */
         $qrcodeLink = $this->config['app']['qrcode-base-url'];
-        $qrcodeLink = rtrim($qrcodeLink,'/') . '/' . $qrcodeId;
+        $qrcodeLink = rtrim($qrcodeLink,'/') . '/d/' . $qrcodeId;
         $qrcodeJson['url'] = $qrcodeLink;
 
         /**
@@ -266,8 +266,7 @@ class DResource extends AbstractResourceListener
         /**
          * Redirecionar para frontend que irá solicitar o código de autenticação
          */
-        $redirect = $this->config['app']['redirect-base-url'];
-        $redirect = rtrim($redirect,'/') . '/' . $id;
+        $redirect = $this->config['app']['redirect-base-url'] . $id;
 
         $response = new Response();
         $response->setStatusCode(Response::STATUS_CODE_302);
