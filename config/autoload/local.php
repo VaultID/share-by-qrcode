@@ -2,9 +2,11 @@
 
 $storageAdapterName = getenv('storageAdapterName') !== false ? getenv('storageAdapterName') : 'StorageDiskAdapter';
 $storageAdapterConfig = getenv('storageAdapterConfig') !== false ? base64_decode( getenv('storageAdapterConfig') ) : '{"path":"/var/www/data/files","prefix":"qrcode-"}';
-$qrcodeBaseUrl = getenv('qrcodeBaseUrl') !== false ? getenv('qrcodeBaseUrl') : 'https://localhost:8086/d';
-$redirectBaseUrl = getenv('redirectBaseUrl') !== false ? getenv('redirectBaseUrl') : 'https://localhost:8086';
+$redirectBaseUrl = getenv('redirectBaseUrl') !== false ? getenv('redirectBaseUrl') : 'https://localhost:8086/public/download.html#';
 
+$qrcodeBaseUrl = getenv('qrcodeBaseUrl') !== false ? getenv('qrcodeBaseUrl') : 'https://localhost:8086';
+$qrcodeBaseUrl = rtrim($qrcodeBaseUrl,'/');
+$qrcodeBaseUrl = rtrim($qrcodeBaseUrl,'/d');
 
 return [
     'app' => [

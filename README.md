@@ -60,8 +60,12 @@ Coloque na pasta `cert/` três arquivos:
 
 ### URL's
 
-- `qrcodeBaseUrl` : Base-URL para o link do QRCode. O `ID` do QRCode será acrescentado a essa Base-URL. **Importante:** mantenha o `/d` no final da URL, a menos que modifique a rota do serviço. Exemplo: `https://seusite.com.br/d`
-- `redirectBaseUrl` : Base-URL do frontend que irá solicitar o Código de Acesso (interface para o usuário). O `ID` do QRCode será acrescentado a essa Base-URL. Exemplo: `https://seusite.com.br/acessar/arquivo`
+- `qrcodeBaseUrl` : Domínio/subdomínio para este serviço. O `/d/{ID}` do QRCode será acrescentado a essa Base-URL.
+
+- `redirectBaseUrl` : Base-URL do frontend que irá solicitar o Código de Acesso (interface para o usuário). O `{ID}` do QRCode será acrescentado a essa Base-URL
+<br>Exemplos:
+    - `https://seusite.com.br/acessar/arquivo/` será redirecionado para `https://seusite.com.br/acessar/arquivo/{ID}`.
+    - `https://seusite.com.br/download?arquivo=` será redirecionado para `https://seusite.com.br/download?arquivo={ID}`.
 
 ### Autenticação na API
 
